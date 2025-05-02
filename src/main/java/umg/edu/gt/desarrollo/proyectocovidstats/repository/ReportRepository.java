@@ -3,10 +3,12 @@ package umg.edu.gt.desarrollo.proyectocovidstats.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 import umg.edu.gt.desarrollo.proyectocovidstats.model.Province;
 import umg.edu.gt.desarrollo.proyectocovidstats.model.Report;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 public interface ReportRepository extends JpaRepository<Report, Long> {
@@ -18,3 +20,4 @@ public interface ReportRepository extends JpaRepository<Report, Long> {
             @Param("province") String province);
 
 }
+

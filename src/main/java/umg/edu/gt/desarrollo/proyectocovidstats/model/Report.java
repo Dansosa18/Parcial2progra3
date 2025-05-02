@@ -5,46 +5,78 @@ import java.time.LocalDate;
 
 @Entity
 @Table(name = "report")
-public class HealthReport {
-
+public class Report {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long reportId;
+    private Long id;
 
     @Column(nullable = false)
-    private LocalDate reportDate;
+    private LocalDate date;
 
-    private int totalCases;
-    private int totalDeaths;
+    private int confirmed;
+    private int deaths;
+    private int recovered;
 
-    private String countryCode;
-    private String countryName;
-    private String regionName;
+    private String iso;
+    private String location;
+    private String province;
 
-    // Eliminado: @ManyToOne provinceEntity
-    // Eliminado: int recovered
+    @ManyToOne
+    @JoinColumn(name = "province_id")
+    private Province provinceEntity;
 
-    public Long getReportId() {
-        return reportId;
+    public Long getId() {
+        return id;
     }
-
-    public void setReportId(Long reportId) {
-        this.reportId = reportId;
+    public void setId(Long id) {
+        this.id = id;
     }
-
-    public LocalDate getReportDate() {
-        return reportDate;
+    public LocalDate getDate() {
+        return date;
     }
-
-    public void setReportDate(LocalDate reportDate) {
-        this.reportDate = reportDate;
+    public void setDate(LocalDate date) {
+        this.date = date;
     }
-
-    public int getTotalCases() {
-        return totalCases;
+    public int getConfirmed() {
+        return confirmed;
     }
-
-    public void setTotalCases(int totalCases) {
-        this.totalCases = totalCases;
+    public void setConfirmed(int confirmed) {
+        this.confirmed = confirmed;
+    }
+    public int getDeaths() {
+        return deaths;
+    }
+    public void setDeaths(int deaths) {
+        this.deaths = deaths;
+    }
+    public int getRecovered() {
+        return recovered;
+    }
+    public void setRecovered(int recovered) {
+        this.recovered = recovered;
+    }
+    public String getIso() {
+        return iso;
+    }
+    public void setIso(String iso) {
+        this.iso = iso;
+    }
+    public String getLocation() {
+        return location;
+    }
+    public void setLocation(String location) {
+        this.location = location;
+    }
+    public String getProvince() {
+        return province;
+    }
+    public void setProvince(String province) {
+        this.province = province;
+    }
+    public Province getProvinceEntity() {
+        return provinceEntity;
+    }
+    public void setProvinceEntity(Province provinceEntity) {
+        this.provinceEntity = provinceEntity;
     }
 }

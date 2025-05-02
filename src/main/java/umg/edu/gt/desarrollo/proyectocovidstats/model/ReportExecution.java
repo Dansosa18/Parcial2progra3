@@ -17,8 +17,6 @@ public class ReportExecution {
     @Column(name = "country_iso", nullable = false, length = 3)
     private String countryIso;
 
-    @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt = LocalDateTime.now();
 
 
     public Long getId() {
@@ -36,7 +34,5 @@ public class ReportExecution {
     public void setCountryIso(String countryIso) {
         this.countryIso = countryIso;
     }
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
+
 }

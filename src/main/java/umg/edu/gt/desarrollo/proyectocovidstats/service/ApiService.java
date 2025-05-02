@@ -10,8 +10,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 
-
-
 @Service
 public class ApiService {
 
@@ -19,9 +17,7 @@ public class ApiService {
     private final ApiClient apiClient;
     private final CovidDataService covidDataService;
     private final AppConfig appConfig;
-
     private final ReportExecutionRepository reportExecutionRepository;
-
 
     public ApiService(ApiClient apiClient, CovidDataService covidDataService, AppConfig appConfig, ReportExecutionRepository reportExecutionRepository) {
         this.apiClient = apiClient;
@@ -32,46 +28,43 @@ public class ApiService {
 
     @Transactional
     public void fetchCovidData() {
-        logger.info("Fetching COVID-19 data...");
+        logger.info("🔄 Starting the process to fetch COVID-19 data...");
 
         String countryIso = appConfig.getCountryIso();
         String reportDate = appConfig.getReportDate();
         LocalDate reportDateSTR = LocalDate.parse(reportDate);
 
-        logger.info("Starting processing for country {} on date {}", countryIso, reportDate);
-        // Check if the report has already been run for the date and country
+        logger.info("📅 Processing data for country: '{}' on date: '{}'", countryIso, reportDate);
+
         if (reportExecutionRepository.existsByExecutionDateAndCountryIso(reportDateSTR, countryIso)) {
-            logger.info("⏭️ Country {} has already been processed for {}. Skipping execution.", countryIso, reportDate);
+            logger.warn("⏭️ Skipping execution: Data for country '{}' on '{}' has already been processed.", countryIso, reportDate);
             return;
         }
 
-        logger.info("countryIso: '{}'", countryIso);
-        logger.info("reportDate: '{}'", reportDate);
-
+        logger.debug("🔍 Configuration details - countryIso: '{}', reportDate: '{}'", countryIso, reportDate);
 
         try {
-            // 🔹 Get regions
+            logger.info("🌍 Fetching regions data...");
             String regions = apiClient.getRegions();
-            logger.info("Regions: " + regions);
-            covidDataService.saveRegions(regions); // ✅ Save to database
+            logger.debug("Regions data received: {}", regions);
+            covidDataService.saveRegions(regions);
 
-            // 🔹 Get Provinces
+            logger.info("📍 Fetching provinces data for country: '{}'...", countryIso);
             String provinces = apiClient.getProvinces(countryIso);
-            logger.info("Provinces for {}: {}", countryIso, provinces);
+            logger.debug("Provinces data received: {}", provinces);
             covidDataService.saveProvinces(provinces, countryIso);
 
-            // 🔹 Get Report
+            logger.info("📊 Fetching report data for date: '{}'...", reportDate);
             String report = apiClient.getReport(reportDate);
-            logger.info("Report for all on {}: {}", reportDate, report);
+            logger.debug("Report data received: {}", report);
             covidDataService.saveReports(report);
 
-            // 🔹 Get Report by Country and Date
+            logger.info("🗂️ Registering execution for country: '{}' on date: '{}'", countryIso, reportDate);
             covidDataService.registerExecution(reportDateSTR, countryIso);
-            logger.info("✅ Report saved in the database.");
+            logger.info("✅ Data successfully saved in the database.");
 
         } catch (Exception e) {
-            logger.error("❌ Error consuming the API or saving to the DB:");
-
+            logger.error("❌ An error occurred while fetching data or saving to the database: {}", e.getMessage(), e);
         }
     }
 }

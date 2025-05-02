@@ -1,4 +1,4 @@
-package umg.edu.gt.desarrollo.proyectocovidstats.util;
+package umg.edu.gt.desarrollo.proyectocovidstats.adittional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
